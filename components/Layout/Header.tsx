@@ -9,7 +9,8 @@ const Header = () => {
         <Link
           href="/"
           className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
-          legacyBehavior>
+          legacyBehavior
+        >
           <svg
             className="w-10 h-10 text-white p-2 bg-blue-500 rounded-full"
             fill="none"
@@ -28,9 +29,7 @@ const Header = () => {
         <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
           {user && (
             <div className="flex itemx-center justify-center mr-5 capitalize bg-blue-500 py-1 px-3 rounded-md text-white">
-              <Link href="/admin">
-                + Create
-              </Link>
+              <Link href="/admin">+ Create</Link>
             </div>
           )}
           {user ? (
@@ -41,11 +40,13 @@ const Header = () => {
               >
                 Logout
               </Link>
-              <img
-                alt="profile"
-                className="rounded-full w-12 h-12"
-                src={user.picture}
-              />
+              {user.picture && (
+                <img
+                  alt="profile"
+                  className="rounded-full w-12 h-12"
+                  src={user.picture}
+                />
+              )}
             </div>
           ) : (
             <Link
