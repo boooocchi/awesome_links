@@ -19,13 +19,22 @@ const AllLinksQuery = gql`
           title
           category
           description
-          id
         }
       }
     }
   }
 `;
 
+interface nodeType {
+  node: {
+    id: number;
+    imageUrl: string;
+    url: string;
+    title: string;
+    category: string;
+    description: string;
+  };
+}
 function Home() {
   const { data, loading, error, fetchMore } = useQuery(AllLinksQuery, {
     variables: { first: 3 }
@@ -44,7 +53,7 @@ function Home() {
       </Head>
       <div className="container mx-auto max-w-5xl my-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {data?.links.edges.map(({ node }) => (
+          {data?.links.edges.map(({ node }: nodeType) => (
             <AwesomeLink
               title={node.title}
               category={node.category}

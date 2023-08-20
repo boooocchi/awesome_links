@@ -17,7 +17,7 @@ export const Link = objectType({
         return await ctx.prisma.link
           .findUnique({
             where: {
-              id: _parent.id
+              id: _parent.id as string
             }
           })
           .users();
@@ -43,7 +43,7 @@ export const LinksQuery = extendType({
         if (args.after) {
           // check if there is a cursor as the argument
           queryResults = await ctx.prisma.link.findMany({
-            take: args.first, // the number of items to return from the database
+            take: args.first as number, // the number of items to return from the database
             skip: 1, // skip the cursor
             cursor: {
               id: args.after // the cursor
