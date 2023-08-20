@@ -16,7 +16,7 @@ export const User = objectType({
         return await ctx.prisma.user
           .findUnique({
             where: {
-              id: _parent.id
+              id: _parent.id as string
             }
           })
           .bookmarks();
