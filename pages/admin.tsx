@@ -3,8 +3,7 @@ import React from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { gql, useMutation } from "@apollo/client";
 import toast, { Toaster } from "react-hot-toast";
-import type { GetServerSideProps } from "next";
-import { getSession } from "@auth0/nextjs-auth0";
+import { uploadPhoto } from "../utils/uploadPhoto";
 
 type FormValues = {
   title: string;
@@ -14,7 +13,7 @@ type FormValues = {
   image: FileList;
 };
 
-const CreateLinkMutation = gql`
+export const CreateLinkMutation = gql`
   mutation (
     $title: String!
     $url: String!
@@ -48,45 +47,21 @@ const Admin = () => {
   } = useForm<FormValues>();
 
   // Upload photo function
-  const uploadPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length <= 0) return;
-    const file = e.target.files[0];
-    const filename = encodeURIComponent(file.name);
-    const res = await fetch(`/api/upload-image?file=${filename}`);
-    const data = await res.json();
-    const formData = new FormData();
-
-    Object.entries({ ...data.fields, file }).forEach(([key, value]) => {
-      // @ts-ignore
-      formData.append(key, value);
-    });
-
-    toast.promise(
-      fetch(data.url, {
-        method: "POST",
-        body: formData
-      }),
-      {
-        loading: "Uploading...",
-        success: "Image successfully uploaded!🎉",
-        error: `Upload failed 😥 Please try again ${error}`
-      }
-    );
-  };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const { title, url, category, description, image } = data;
     const imageUrl = `https://${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${image[0]?.name}`;
 
     const variables = { title, url, category, description, imageUrl };
+
     try {
       toast.promise(createLink({ variables }), {
         loading: "Creating new link..",
-        success: "Link successfully created!🎉",
+        success: "Link successfully created!",
         error: `Something went wrong 😥 Please try again -  ${error}`
       });
     } catch (error) {
-      console.error(error);
+      console.error("hihi", error);
     }
   };
 
@@ -144,10 +119,11 @@ const Admin = () => {
           </span>
           <input
             {...register("image", { required: true })}
-            onChange={uploadPhoto}
+            onChange={(e) => uploadPhoto(e, error)}
             type="file"
             accept="image/png, image/jpeg"
             name="image"
+            role="uploadInput"
           />
         </label>
 
@@ -178,5 +154,3 @@ const Admin = () => {
 };
 
 export default Admin;
-
-// getServerSideProps code remains unchanged
